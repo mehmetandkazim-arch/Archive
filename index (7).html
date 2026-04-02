@@ -1,0 +1,2078 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mehmet & Kazim — Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&family=Josefin+Sans:wght@300;400;600&family=Raleway:wght@300;400;600&family=Montserrat:wght@300;400;600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --bg: #ffe7e7;
+  --surface: #f5d5d5;
+  --card: #1c1a16;
+  --border: #000000;
+  --gold: #f78d8d;
+  --gold-light: #f9a8a8;
+  --gold-dim: rgba(247,141,141,0.12);
+  --text: #030202;
+  --text-dim: #6b4a4a;
+  --text-mid: #3d2020;
+  --red: #c0392b;
+  --green: #27ae60;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 40px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 100;
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-style: italic;
+  color: var(--gold);
+}
+.logo span {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--text);
+  font-size: 17px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.header-right { display: flex; gap: 10px; align-items: center; }
+
+button {
+  font-family: 'DM Mono', monospace;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: #0e0d0b;
+  padding: 9px 18px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.btn-primary:hover { background: var(--gold-light); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-mid);
+  border: 1px solid var(--border);
+  padding: 8px 14px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+.btn-danger {
+  background: transparent;
+  color: var(--red);
+  border: 1px solid var(--red);
+  padding: 8px 14px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.btn-danger:hover { background: rgba(192,57,43,0.1); }
+
+/* ── TABS ── */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  padding: 0 40px;
+  gap: 0;
+}
+.tab {
+  background: transparent;
+  color: var(--text-dim);
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 14px 20px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: -1px;
+}
+.tab:hover { color: var(--text-mid); }
+.tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ── STATS ── */
+.stats-bar {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+.stat {
+  padding: 14px 28px;
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+}
+.stat-label {
+  color: var(--text-dim);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.stat-value {
+  color: var(--gold);
+  font-size: 18px;
+  font-family: 'Playfair Display', serif;
+}
+
+/* ── TOOLBAR ── */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 40px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.toolbar-left { display: flex; gap: 8px; flex: 1; flex-wrap: wrap; }
+
+select, input[type="text"] {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  padding: 7px 11px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+select:focus, input:focus { border-color: var(--gold); }
+select option { background: var(--surface); }
+
+.search-input { min-width: 200px; flex: 1; }
+
+/* ── MAIN ── */
+main { padding: 30px 40px; }
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── GRID ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2px;
+}
+
+.art-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.art-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+
+.art-card-img {
+  width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block;
+  background: var(--surface);
+}
+.art-card-placeholder {
+  width: 100%; aspect-ratio: 4/3;
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; color: var(--text-dim);
+}
+.art-card-body { padding: 14px 16px; }
+.art-card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px; color: var(--text);
+  margin-bottom: 5px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.art-card-meta { color: var(--text-dim); font-size: 11px; line-height: 1.8; }
+.art-card-footer {
+  margin-top: 10px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.price-tag { color: var(--gold); font-size: 13px; font-weight: 500; }
+
+.status-badge {
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 7px; border: 1px solid;
+}
+.status-verfügbar { color: var(--green); border-color: var(--green); }
+.status-verkauft { color: var(--red); border-color: var(--red); }
+.status-reserviert { color: var(--gold); border-color: var(--gold); }
+
+/* ── LIST VIEW ── */
+.list-view { border: 1px solid var(--border); }
+.list-header, .list-row {
+  display: grid;
+  grid-template-columns: 60px 1fr 120px 80px 120px 100px 50px;
+}
+.list-header {
+  background: var(--surface);
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.list-header div, .list-row > div {
+  padding: 11px 13px; border-right: 1px solid var(--border);
+}
+.list-row {
+  border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 0.15s;
+}
+.list-row:hover { background: var(--gold-dim); }
+.list-row:last-child { border-bottom: none; }
+.list-thumb { width: 36px; height: 36px; object-fit: cover; background: var(--surface); }
+.list-thumb-ph {
+  width: 36px; height: 36px; background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--text-dim);
+}
+.list-title {
+  font-family: 'Playfair Display', serif; font-size: 14px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.list-price { color: var(--gold); }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center; padding: 100px 40px; color: var(--text-dim);
+}
+.empty-state .icon { font-size: 48px; margin-bottom: 20px; opacity: 0.3; }
+.empty-state p { font-size: 14px; margin-bottom: 6px; color: var(--text-mid); }
+
+/* ── OVERLAY / MODAL ── */
+.overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+  z-index: 200; display: flex; align-items: center; justify-content: center;
+  padding: 20px; backdrop-filter: blur(4px);
+}
+.overlay.hidden { display: none; }
+
+.modal {
+  background: var(--card); border: 1px solid var(--border);
+  width: 100%; max-width: 680px; max-height: 92vh; overflow-y: auto;
+  position: relative;
+}
+.modal-header {
+  padding: 22px 28px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  position: sticky; top: 0; background: var(--card); z-index: 10;
+}
+.modal-title {
+  font-family: 'Playfair Display', serif; font-size: 20px;
+  color: var(--gold); font-style: italic;
+}
+.btn-close {
+  background: transparent; color: var(--text-dim);
+  border: 1px solid var(--border); width: 32px; height: 32px;
+  font-size: 16px; display: flex; align-items: center; justify-content: center;
+}
+.btn-close:hover { color: var(--text); border-color: var(--text-mid); }
+.modal-body { padding: 24px 28px; }
+
+/* ── FORM ── */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group.full { grid-column: 1 / -1; }
+label {
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.form-group input, .form-group select, .form-group textarea {
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-family: 'DM Mono', monospace;
+  font-size: 13px; padding: 10px 12px; outline: none; width: 100%;
+  transition: border-color 0.2s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: var(--gold);
+}
+.form-group textarea { resize: vertical; min-height: 80px; }
+
+.upload-area {
+  border: 2px dashed var(--border); padding: 28px;
+  text-align: center; cursor: pointer; transition: border-color 0.2s;
+  position: relative;
+}
+.upload-area:hover { border-color: var(--gold); }
+.upload-area input[type="file"] {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+}
+.upload-preview {
+  width: 100%; max-height: 180px; object-fit: contain;
+  display: none; margin-bottom: 10px;
+}
+.upload-preview.visible { display: block; }
+.upload-hint { color: var(--text-dim); font-size: 11px; }
+.upload-hint span { color: var(--gold); display: block; font-size: 13px; margin-bottom: 4px; }
+
+.form-actions {
+  margin-top: 22px; display: flex; gap: 10px; justify-content: flex-end;
+}
+
+/* ── DETAIL MODAL ── */
+.detail-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+.detail-img-wrap {
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center; min-height: 300px;
+}
+.detail-img-wrap img { width: 100%; height: 100%; max-height: 420px; object-fit: contain; }
+.detail-info { padding: 28px; display: flex; flex-direction: column; gap: 14px; }
+.detail-title {
+  font-family: 'Playfair Display', serif; font-size: 22px;
+  color: var(--text); line-height: 1.3;
+}
+.detail-price { font-size: 20px; color: var(--gold); font-family: 'Playfair Display', serif; }
+.detail-row {
+  display: flex; flex-direction: column; gap: 3px;
+  border-bottom: 1px solid var(--border); padding-bottom: 12px;
+}
+.detail-row-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); }
+.detail-row-value { font-size: 14px; color: var(--text); }
+.detail-actions { display: flex; gap: 8px; margin-top: auto; }
+
+/* ── LOGIN ── */
+.login-wrap {
+  max-width: 400px; margin: 80px auto; padding: 40px;
+  background: var(--card); border: 1px solid var(--border);
+}
+.login-title {
+  font-family: 'Playfair Display', serif; font-size: 22px;
+  color: var(--gold); font-style: italic; margin-bottom: 24px; text-align: center;
+}
+.login-wrap .form-group { margin-bottom: 16px; }
+.login-wrap input {
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text); font-family: 'DM Mono', monospace;
+  font-size: 13px; padding: 10px 12px; outline: none; width: 100%;
+}
+.login-wrap input:focus { border-color: var(--gold); }
+.login-error { color: var(--red); font-size: 12px; margin-top: 10px; text-align: center; }
+
+/* ── GALERIE (PUBLIC) ── */
+.galerie-header {
+  text-align: center; padding: 60px 40px 40px;
+  border-bottom: 1px solid var(--border);
+}
+.galerie-logo {
+  font-family: 'Playfair Display', serif; font-size: 36px;
+  font-style: italic; color: var(--gold); margin-bottom: 8px;
+}
+.galerie-subtitle {
+  color: var(--text-dim); font-size: 12px;
+  letter-spacing: 0.2em; text-transform: uppercase;
+}
+
+/* ── LOADING ── */
+.loading {
+  text-align: center; padding: 60px; color: var(--text-dim); font-size: 12px;
+}
+.spinner {
+  width: 24px; height: 24px; border: 2px solid var(--border);
+  border-top-color: var(--gold); border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 0 auto 14px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; bottom: 30px; right: 30px; z-index: 999;
+  background: var(--card); border: 1px solid var(--gold);
+  padding: 12px 20px; font-size: 12px; color: var(--text);
+  transform: translateY(20px); opacity: 0;
+  transition: all 0.3s; pointer-events: none;
+}
+#toast.show { transform: translateY(0); opacity: 1; }
+#toast.error { border-color: var(--red); color: var(--red); }
+
+/* ── PDF DESIGNER ── */
+.pdfdesign-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  height: calc(100vh - 160px);
+  overflow: hidden;
+}
+.pdfdesign-controls {
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--surface);
+}
+.pdc-section {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+.pdc-title {
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 12px; font-weight: 500;
+}
+.pdc-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 10px; gap: 10px;
+}
+.pdc-row label {
+  font-size: 11px; color: var(--text-mid); white-space: nowrap;
+  text-transform: none; letter-spacing: 0;
+}
+.pdc-row input[type="color"] {
+  width: 38px; height: 28px; padding: 2px;
+  border: 1px solid var(--border); background: var(--surface);
+  cursor: pointer; flex-shrink: 0;
+}
+.pdc-slider-row {
+  display: flex; align-items: center; gap: 8px; flex: 1; justify-content: flex-end;
+}
+.pdc-slider-row input[type="range"] {
+  width: 90px; accent-color: var(--gold); background: transparent;
+  border: none; padding: 0;
+}
+.pdc-slider-row span {
+  font-size: 10px; color: var(--gold); min-width: 32px; text-align: right;
+}
+.pdc-toggle-row { display: flex; gap: 4px; }
+.pdc-toggle {
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text-dim); font-family: 'DM Mono', monospace;
+  font-size: 11px; padding: 5px 12px; cursor: pointer; transition: all 0.15s;
+}
+.pdc-toggle.active {
+  background: var(--gold-dim); border-color: var(--gold); color: var(--gold);
+}
+.pdc-checks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pdc-check {
+  display: flex; align-items: center; gap: 6px; font-size: 11px;
+  color: var(--text-mid); cursor: pointer; text-transform: none; letter-spacing: 0;
+}
+.pdc-check input[type="checkbox"] {
+  accent-color: var(--gold); width: 13px; height: 13px;
+  border: none; padding: 0; background: transparent;
+}
+.color-presets { display: flex; gap: 6px; }
+.cp {
+  width: 22px; height: 22px; border: 2px solid var(--border);
+  cursor: pointer; transition: border-color 0.15s, transform 0.15s; flex-shrink: 0;
+}
+.cp:hover { border-color: var(--gold); transform: scale(1.2); }
+.pdfdesign-preview-wrap {
+  display: flex; flex-direction: column; background: #2a2720; overflow: hidden;
+}
+.pdfdesign-preview-label {
+  padding: 10px 20px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-dim); border-bottom: 1px solid var(--border);
+  background: var(--surface); flex-shrink: 0;
+}
+.pdfdesign-preview-scroll {
+  flex: 1; overflow: auto; display: flex;
+  align-items: flex-start; justify-content: center; padding: 24px;
+}
+#pdfPreviewCanvas { box-shadow: 0 4px 40px rgba(0,0,0,0.6); max-width: 100%; }
+
+/* ── SELECTION ── */
+.art-card .sel-check {
+  position: absolute; top: 8px; left: 8px; z-index: 10;
+  width: 22px; height: 22px; cursor: pointer;
+  accent-color: var(--gold); display: none;
+}
+body.sel-mode .art-card .sel-check { display: block; }
+.art-card.selected { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold); }
+
+.list-row .sel-check {
+  width: 16px; height: 16px; cursor: pointer;
+  accent-color: var(--gold); display: none; margin: auto;
+}
+body.sel-mode .list-row .sel-check { display: block; }
+.list-row.selected { background: var(--gold-dim); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  header { padding: 16px 20px; }
+  .tabs { padding: 0 20px; }
+  .toolbar { padding: 12px 20px; }
+  main { padding: 20px; }
+  .detail-layout { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-group.full { grid-column: 1; }
+  .list-header, .list-row { grid-template-columns: 50px 1fr 80px 50px; }
+  .list-header div:nth-child(n+5),
+  .list-row > div:nth-child(n+5) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOAST ── -->
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════════════════
+     ADMIN VIEW
+══════════════════════════════════════════════════ -->
+<div id="adminView" style="display:none">
+
+  <header>
+    <div class="logo">Mehmet & Kazim <span>Archive</span></div>
+    <div class="header-right">
+      <span id="adminEmail" style="color:var(--text-dim);font-size:11px"></span>
+      <button class="btn-primary" onclick="openAddModal()">+ Werk hinzufügen</button>
+      <button class="btn-ghost" onclick="logout()">Abmelden</button>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" id="tabArchiv" onclick="switchAdminTab('archiv')">Archiv</button>
+    <button class="tab" id="tabPdf" onclick="switchAdminTab('pdf')">PDF Designer</button>
+    <button class="tab" id="tabDesign" onclick="switchAdminTab('design')">App Design</button>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar" id="statsBar">
+    <div class="stat"><div class="stat-label">Gesamt</div><div class="stat-value" id="statTotal">—</div></div>
+    <div class="stat"><div class="stat-label">Verfügbar</div><div class="stat-value" id="statVerfuegbar">—</div></div>
+    <div class="stat"><div class="stat-label">Verkauft</div><div class="stat-value" id="statVerkauft">—</div></div>
+    <div class="stat"><div class="stat-label">Gesamtwert</div><div class="stat-value" id="statWert">—</div></div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar" id="toolbar">
+    <div class="toolbar-left">
+      <input type="text" class="search-input" placeholder="Suchen…" oninput="filterWerke()" id="searchInput">
+      <select onchange="filterWerke()" id="filterStatus">
+        <option value="">Alle Status</option>
+        <option>verfügbar</option>
+        <option>verkauft</option>
+        <option>reserviert</option>
+      </select>
+      <select onchange="filterWerke()" id="filterKategorie">
+        <option value="">Alle Kategorien</option>
+      </select>
+      <select onchange="filterWerke()" id="filterJahr">
+        <option value="">Alle Jahre</option>
+      </select>
+    <div class="toolbar-left">
+      <input type="text" class="search-input" placeholder="Suchen…" oninput="filterWerke()" id="searchInput">
+      <select onchange="filterWerke()" id="filterStatus">
+        <option value="">Alle Status</option>
+        <option>verfügbar</option>
+        <option>verkauft</option>
+        <option>reserviert</option>
+      </select>
+      <select onchange="filterWerke()" id="filterKategorie">
+        <option value="">Alle Kategorien</option>
+      </select>
+      <select onchange="filterWerke()" id="filterJahr">
+        <option value="">Alle Jahre</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn-ghost" id="btnSelMode" onclick="toggleSelectionMode()" title="Auswahl-Modus">☑ Auswählen</button>
+      <button class="btn-primary" id="btnExportSel" onclick="exportSelectedPDF()" style="display:none">↓ PDF (<span id="selCount">0</span>)</button>
+      <button class="btn-ghost" id="btnSelAll" onclick="selectAll()" style="display:none;font-size:11px">Alle</button>
+      <button class="btn-ghost" id="btnSelNone" onclick="selectNone()" style="display:none;font-size:11px">Keine</button>
+      <button class="btn-ghost btn-icon" onclick="toggleView()" id="viewBtn" title="Ansicht wechseln">☰</button>
+    </div>
+  </div>
+
+  <main>
+    <!-- ARCHIV PAGE -->
+    <div id="pageArchiv" class="page active">
+      <div id="archivContent"><div class="loading"><div class="spinner"></div>Lade Werke…</div></div>
+    </div>
+    <!-- PDF DESIGNER PAGE -->
+    <div id="pagePdf" class="page" style="margin: -30px -40px;">
+      <div class="pdfdesign-layout">
+        <!-- LEFT: Controls -->
+        <div class="pdfdesign-controls">
+          <div class="pdc-section">
+            <div class="pdc-title">🎨 Hintergrund & Farben</div>
+            <div class="pdc-row"><label>Seiten-Hintergrund</label><input type="color" id="pdBg" value="#0e0d0b" oninput="updatePreview()"></div>
+            <div class="pdc-row"><label>Karten-Hintergrund</label><input type="color" id="pdCardBg" value="#1c1a16" oninput="updatePreview()"></div>
+            <div class="pdc-row"><label>Akzentfarbe</label><input type="color" id="pdAccent" value="#c9a84c" oninput="updatePreview()"></div>
+            <div class="pdc-row"><label>Titelfarbe</label><input type="color" id="pdTitleColor" value="#e8e0d0" oninput="updatePreview()"></div>
+            <div class="pdc-row"><label>Metafarbe</label><input type="color" id="pdMetaColor" value="#7a7060" oninput="updatePreview()"></div>
+            <div class="pdc-row" style="flex-direction:column;align-items:flex-start;gap:6px">
+              <label style="color:var(--text-mid);font-size:11px">Hintergrund-Bild</label>
+              <div style="display:flex;gap:6px;width:100%;align-items:center">
+                <label style="background:var(--gold-dim);border:1px solid var(--gold);color:var(--gold);padding:5px 10px;font-size:10px;letter-spacing:0.08em;cursor:pointer;white-space:nowrap">
+                  ↑ Bild wählen
+                  <input type="file" id="pdBgImageInput" accept="image/*" style="display:none" onchange="handleBgImageUpload(event)">
+                </label>
+                <span id="bgImageLabel" style="font-size:10px;color:var(--text-dim);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Kein Bild</span>
+                <button class="btn-ghost" style="padding:4px 8px;font-size:10px" onclick="removeBgImage()">✕</button>
+              </div>
+            </div>
+            <div class="pdc-row">
+              <label>Bild-Deckkraft</label>
+              <div class="pdc-slider-row">
+                <input type="range" id="pdBgOpacity" min="0.05" max="1" step="0.05" value="1" oninput="updatePreview()">
+                <span id="pdBgOpacityVal">1.0</span>
+              </div>
+            </div>
+            <div class="pdc-row">
+              <label>Preset</label>
+              <div class="color-presets">
+                <div class="cp" style="background:#0e0d0b" onclick="applyBgPreset('#0e0d0b','#1c1a16','#c9a84c')" title="Dark Gold"></div>
+                <div class="cp" style="background:#0f1923" onclick="applyBgPreset('#0f1923','#1a2535','#4a9eff')" title="Dark Blue"></div>
+                <div class="cp" style="background:#1a0a0a" onclick="applyBgPreset('#1a0a0a','#2a1010','#e05555')" title="Dark Red"></div>
+                <div class="cp" style="background:#faf8f4" onclick="applyBgPreset('#faf8f4','#ffffff','#b8913a')" title="Hell Klassisch"></div>
+                <div class="cp" style="background:#f0ede8" onclick="applyBgPreset('#f0ede8','#ffffff','#7c6a52')" title="Hell Warm"></div>
+                <div class="cp" style="background:#e8f0ee" onclick="applyBgPreset('#e8f0ee','#ffffff','#2d7a5f')" title="Hell Grün"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pdc-section">
+            <div class="pdc-title">🔤 Schrift</div>
+            <div class="pdc-row">
+              <label>Titel-Schrift</label>
+              <select id="pdTitleFont" onchange="updatePreview()" style="flex:1;max-width:155px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:5px 8px;outline:none">
+                <option value="serif">Serif</option>
+                <option value="'Playfair Display', serif">Playfair Display</option>
+                <option value="'Cormorant Garamond', serif">Cormorant Garamond</option>
+                <option value="monospace">Monospace</option>
+              </select>
+            </div>
+            <div class="pdc-row">
+              <label>Meta-Schrift</label>
+              <select id="pdMetaFont" onchange="updatePreview()" style="flex:1;max-width:155px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:5px 8px;outline:none">
+                <option value="monospace">Monospace</option>
+                <option value="'DM Mono', monospace">DM Mono</option>
+                <option value="sans-serif">Sans-serif</option>
+              </select>
+            </div>
+            <div class="pdc-row"><label>Titelgröße</label><div class="pdc-slider-row"><input type="range" id="pdTitleSize" min="8" max="20" value="11" oninput="updatePreview()"><span id="pdTitleSizeVal">11pt</span></div></div>
+            <div class="pdc-row"><label>Metagröße</label><div class="pdc-slider-row"><input type="range" id="pdMetaSize" min="6" max="14" value="8" oninput="updatePreview()"><span id="pdMetaSizeVal">8pt</span></div></div>
+            <div class="pdc-row"><label>Preisgröße</label><div class="pdc-slider-row"><input type="range" id="pdPreisSize" min="6" max="16" value="9" oninput="updatePreview()"><span id="pdPreisSizeVal">9pt</span></div></div>
+          </div>
+
+          <div class="pdc-section">
+            <div class="pdc-title">📐 Layout</div>
+            <div class="pdc-row">
+              <label>Spalten</label>
+              <div class="pdc-toggle-row">
+                <button class="pdc-toggle active" id="col1btn" onclick="setPdfCols(1)">1</button>
+                <button class="pdc-toggle" id="col2btn" onclick="setPdfCols(2)">2</button>
+                <button class="pdc-toggle" id="col3btn" onclick="setPdfCols(3)">3</button>
+              </div>
+            </div>
+            <div class="pdc-row"><label>Bildhöhe</label><div class="pdc-slider-row"><input type="range" id="pdImgH" min="20" max="100" value="52" oninput="updatePreview()"><span id="pdImgHVal">52mm</span></div></div>
+            <div class="pdc-row"><label>Innenabstand</label><div class="pdc-slider-row"><input type="range" id="pdMargin" min="5" max="30" value="15" oninput="updatePreview()"><span id="pdMarginVal">15mm</span></div></div>
+            <div class="pdc-row"><label>Kartenabstand</label><div class="pdc-slider-row"><input type="range" id="pdGap" min="2" max="20" value="8" oninput="updatePreview()"><span id="pdGapVal">8mm</span></div></div>
+          </div>
+
+          <div class="pdc-section">
+            <div class="pdc-title">🧩 Felder anzeigen</div>
+            <div class="pdc-checks">
+              <label class="pdc-check"><input type="checkbox" id="pdShowTitel" checked onchange="updatePreview()"> Titel</label>
+              <label class="pdc-check"><input type="checkbox" id="pdShowTechnik" checked onchange="updatePreview()"> Technik</label>
+              <label class="pdc-check"><input type="checkbox" id="pdShowJahr" checked onchange="updatePreview()"> Jahr</label>
+              <label class="pdc-check"><input type="checkbox" id="pdShowMasse" checked onchange="updatePreview()"> Maße</label>
+              <label class="pdc-check"><input type="checkbox" id="pdShowPreis" checked onchange="updatePreview()"> Preis</label>
+              <label class="pdc-check"><input type="checkbox" id="pdShowStatus" checked onchange="updatePreview()"> Status</label>
+              <label class="pdc-check"><input type="checkbox" id="pdShowNr" onchange="updatePreview()"> Nummer</label>
+            </div>
+          </div>
+
+          <div class="pdc-section">
+            <div class="pdc-title">📄 Titelseite</div>
+            <div class="pdc-row"><label>Haupttitel</label><input type="text" id="pdCoverTitle" value="Mehmet & Kazim" oninput="updatePreview()" style="flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:5px 8px;outline:none"></div>
+            <div class="pdc-row"><label>Untertitel</label><input type="text" id="pdCoverSub" value="Archive" oninput="updatePreview()" style="flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:5px 8px;outline:none"></div>
+            <div class="pdc-row"><label><input type="checkbox" id="pdShowCover" checked onchange="updatePreview()"> Titelseite einblenden</label></div>
+          </div>
+
+          <button class="btn-primary" style="width:100%;margin-top:6px;padding:14px" onclick="exportPDFWithDesign()">↓ PDF exportieren</button>
+          <button class="btn-ghost" style="width:100%;margin-top:8px;padding:10px;font-size:11px" onclick="resetPdfDesign()">↺ Design zurücksetzen</button>
+        </div>
+
+        <!-- RIGHT: Live Preview -->
+        <div class="pdfdesign-preview-wrap">
+          <div class="pdfdesign-preview-label">Vorschau — Seite 1</div>
+          <div class="pdfdesign-preview-scroll">
+            <canvas id="pdfPreviewCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APP DESIGN PAGE -->
+    <div id="pageDesign" class="page">
+      <div style="max-width:700px">
+
+        <div style="margin-bottom:30px">
+          <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);margin-bottom:6px">🎨 App-Farben</div>
+          <div style="font-size:11px;color:var(--text-dim);margin-bottom:18px">Alle Änderungen werden sofort sichtbar und gespeichert.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="form-group">
+              <label>Hintergrund</label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="color" id="appBg" value="#ffe7e7" oninput="applyAppDesign()" style="width:44px;height:34px;padding:2px;border:1px solid var(--border);background:var(--surface);cursor:pointer">
+                <span id="appBgVal" style="font-size:11px;color:var(--text-dim)">#ffe7e7</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Karten-Farbe</label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="color" id="appCard" value="#1c1a16" oninput="applyAppDesign()" style="width:44px;height:34px;padding:2px;border:1px solid var(--border);background:var(--surface);cursor:pointer">
+                <span id="appCardVal" style="font-size:11px;color:var(--text-dim)">#1c1a16</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Akzentfarbe</label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="color" id="appAccent" value="#f78d8d" oninput="applyAppDesign()" style="width:44px;height:34px;padding:2px;border:1px solid var(--border);background:var(--surface);cursor:pointer">
+                <span id="appAccentVal" style="font-size:11px;color:var(--text-dim)">#f78d8d</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Textfarbe</label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="color" id="appText" value="#030202" oninput="applyAppDesign()" style="width:44px;height:34px;padding:2px;border:1px solid var(--border);background:var(--surface);cursor:pointer">
+                <span id="appTextVal" style="font-size:11px;color:var(--text-dim)">#030202</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Border-Farbe</label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <input type="color" id="appBorder" value="#000000" oninput="applyAppDesign()" style="width:44px;height:34px;padding:2px;border:1px solid var(--border);background:var(--surface);cursor:pointer">
+                <span id="appBorderVal" style="font-size:11px;color:var(--text-dim)">#000000</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:18px">
+            <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px">Schnell-Themes</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <button class="btn-ghost" style="font-size:11px;padding:8px 12px" onclick="applyAppTheme('#0e0d0b','#1c1a16','#c9a84c','#e8e0d0','#2a2720')">🌑 Dark Gold</button>
+              <button class="btn-ghost" style="font-size:11px;padding:8px 12px" onclick="applyAppTheme('#0f1923','#1a2535','#4a9eff','#e0eeff','#1e3050')">🌊 Dark Blue</button>
+              <button class="btn-ghost" style="font-size:11px;padding:8px 12px" onclick="applyAppTheme('#1a0808','#2a1010','#e05555','#f0e0e0','#3a1818')">🔴 Dark Red</button>
+              <button class="btn-ghost" style="font-size:11px;padding:8px 12px" onclick="applyAppTheme('#faf8f4','#ffffff','#b8913a','#1a1714','#e0d8cc')">☀️ Hell Classic</button>
+              <button class="btn-ghost" style="font-size:11px;padding:8px 12px" onclick="applyAppTheme('#f0ede8','#ffffff','#5a8a6a','#1a1714','#d8d0c8')">🌿 Hell Grün</button>
+              <button class="btn-ghost" style="font-size:11px;padding:8px 12px" onclick="applyAppTheme('#ffe7e7','#1c1a16','#f78d8d','#030202','#000000')">↺ Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border);padding-top:28px;margin-bottom:30px">
+          <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);margin-bottom:6px">🔤 Schrift</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+            <div class="form-group">
+              <label>Display-Schrift (Titel, Überschriften)</label>
+              <select id="appFontDisplay" onchange="applyAppDesign()">
+                <option value="'Cormorant Garamond', serif">Cormorant Garamond ← Standard</option>
+                <option value="'Playfair Display', serif">Playfair Display</option>
+                <option value="'EB Garamond', serif">EB Garamond</option>
+                <option value="'Lora', serif">Lora</option>
+                <option value="'Cinzel', serif">Cinzel</option>
+                <option value="'Josefin Sans', sans-serif">Josefin Sans</option>
+                <option value="'Raleway', sans-serif">Raleway</option>
+                <option value="'Montserrat', sans-serif">Montserrat</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Text-Schrift (Felder, Menüs)</label>
+              <select id="appFontBody" onchange="applyAppDesign()">
+                <option value="'DM Mono', monospace">DM Mono ← Standard</option>
+                <option value="monospace">Monospace</option>
+                <option value="'Inter', sans-serif">Inter</option>
+                <option value="'Josefin Sans', sans-serif">Josefin Sans</option>
+                <option value="'Raleway', sans-serif">Raleway</option>
+                <option value="'Montserrat', sans-serif">Montserrat</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Schriftgröße</label>
+              <div style="display:flex;align-items:center;gap:10px">
+                <input type="range" id="appFontSize" min="11" max="16" value="13" oninput="applyAppDesign()" style="flex:1;accent-color:var(--gold)">
+                <span id="appFontSizeVal" style="font-size:11px;color:var(--gold);min-width:30px">13px</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border);padding-top:28px;margin-bottom:30px">
+          <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);margin-bottom:6px">✦ Werksverzeichnis</div>
+          <div style="font-size:11px;color:var(--text-dim);margin-bottom:16px">Vergibt allen Werken ohne Nummer eine eindeutige MK-Nummer (Format: MK-JAHR-XXX).</div>
+          <button id="btnAssignNummern" class="btn-primary" style="padding:12px 24px" onclick="assignMissingNummern()">✦ Nummern vergeben</button>
+        </div>
+
+        <div style="border-top:1px solid var(--border);padding-top:28px">
+          <div style="font-family:'Playfair Display',serif;font-size:18px;color:var(--gold);margin-bottom:6px">✏️ Name & Logo</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+            <div class="form-group">
+              <label>Name (Hauptteil)</label>
+              <input type="text" id="appLogoMain" value="Mehmet & Kazim" oninput="applyAppDesign()" placeholder="z.B. Mehmet & Kazim">
+            </div>
+            <div class="form-group">
+              <label>Zusatz</label>
+              <input type="text" id="appLogoSub" value="Archive" oninput="applyAppDesign()" placeholder="z.B. Archive">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- GALERIE PAGE (admin preview) -->
+
+  </main>
+
+</div><!-- /adminView -->
+
+
+
+<!-- ══════════════════════════════════════════════════
+     LOGIN VIEW
+══════════════════════════════════════════════════ -->
+<div id="loginView" style="display:none">
+  <div class="login-wrap">
+    <div class="login-title">Admin Login</div>
+    <div class="form-group">
+      <label>E-Mail</label>
+      <input type="email" id="loginEmail" placeholder="deine@email.com">
+    </div>
+    <div class="form-group">
+      <label>Passwort</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(e.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-primary" style="width:100%;margin-top:16px;padding:12px" onclick="doLogin()">Anmelden</button>
+    <div id="loginError" class="login-error"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     MODALS
+══════════════════════════════════════════════════ -->
+
+<!-- ADD / EDIT MODAL -->
+<div class="overlay hidden" id="addOverlay" onclick="if(event.target===this)closeAddModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="addModalTitle">Neues Werk</div>
+      <button class="btn-close" onclick="closeAddModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Titel *</label>
+          <input type="text" id="fTitel" placeholder="Werktitel">
+        </div>
+        <div class="form-group">
+          <label>Jahr</label>
+          <input type="text" id="fJahr" placeholder="2024">
+        </div>
+        <div class="form-group">
+          <label>Technik</label>
+          <input type="text" id="fTechnik" placeholder="Öl auf Leinwand">
+        </div>
+        <div class="form-group">
+          <label>Maße</label>
+          <input type="text" id="fMasse" placeholder="80 × 60 cm">
+        </div>
+        <div class="form-group">
+          <label>Preis (€)</label>
+          <input type="text" id="fPreis" placeholder="1200">
+        </div>
+        <div class="form-group">
+          <label>Kategorie</label>
+          <input type="text" id="fKategorie" placeholder="Malerei">
+        </div>
+        <div class="form-group">
+          <label>Ort</label>
+          <input type="text" id="fOrt" placeholder="z.B. Atelier, Galerie München…">
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="fStatus">
+            <option>verfügbar</option>
+            <option>reserviert</option>
+            <option>verkauft</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Beschreibung</label>
+          <textarea id="fBeschreibung" placeholder="Beschreibung des Werks…"></textarea>
+        </div>
+        <div class="form-group full">
+          <label>Bild</label>
+          <div class="upload-area" id="uploadArea">
+            <input type="file" id="fBild" accept="image/*,image/tiff" onchange="previewBild(this)">
+            <img class="upload-preview" id="uploadPreview" src="">
+            <div class="upload-hint">
+              <span>📷 Bild hochladen</span>
+              JPG, PNG, TIFF — bis 20 MB
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-ghost" onclick="closeAddModal()">Abbrechen</button>
+        <button class="btn-primary" id="saveBtn" onclick="saveWerk()">Speichern</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="overlay hidden" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+  <div class="modal" style="max-width:800px">
+    <div class="modal-header">
+      <div class="modal-title" id="detailTitle">—</div>
+      <button class="btn-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div id="detailBody"></div>
+  </div>
+</div>
+
+<script>
+// ── SUPABASE ─────────────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://waerhdrkbsijawwhfiel.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhZXJoZHJrYnNpamF3d2hmaWVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NjM4MjMsImV4cCI6MjA5MDQzOTgyM30.UjuqJee9VBX2acF992dae-2AB0SpMAkbpZdKLlQ9JwQ';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let allWerke = [];
+let filteredWerke = [];
+let gridView = true;
+let editId = null;
+let currentUser = null;
+let isPublicMode = false;
+let selectionMode = false;
+let selectedIds = new Set();
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+(async function init() {
+  const { data: { session } } = await sb.auth.getSession();
+  currentUser = session?.user || null;
+
+  const params = new URLSearchParams(window.location.search);
+  if (currentUser) {
+    showAdmin();
+    loadAppDesign();
+  } else {
+    showAdminLogin();
+  }
+})();
+
+// ── VIEW SWITCHING ────────────────────────────────────────────────────────────
+function showAdmin() {
+  isPublicMode = false;
+  document.getElementById('adminView').style.display = 'block';
+  document.getElementById('loginView').style.display = 'none';
+  if (currentUser) {
+    document.getElementById('adminEmail').textContent = currentUser.email;
+  }
+  loadWerke();
+}
+
+function showAdminLogin() {
+  document.getElementById('loginView').style.display = 'block';
+  document.getElementById('adminView').style.display = 'none';
+}
+
+function switchAdminTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const showStats   = tab === 'archiv';
+  const showToolbar = tab === 'archiv';
+  document.getElementById('statsBar').style.display  = showStats   ? '' : 'none';
+  document.getElementById('toolbar').style.display   = showToolbar ? '' : 'none';
+  if (tab === 'archiv') {
+    document.getElementById('tabArchiv').classList.add('active');
+    document.getElementById('pageArchiv').classList.add('active');
+  } else if (tab === 'pdf') {
+    document.getElementById('tabPdf').classList.add('active');
+    document.getElementById('pagePdf').classList.add('active');
+    setTimeout(updatePreview, 80);
+  } else if (tab === 'design') {
+    document.getElementById('tabDesign').classList.add('active');
+    document.getElementById('pageDesign').classList.add('active');
+  }
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw    = document.getElementById('loginPassword').value;
+  document.getElementById('loginError').textContent = '';
+  const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+  if (error) {
+    document.getElementById('loginError').textContent = 'Fehler: ' + error.message;
+    return;
+  }
+  currentUser = data.user;
+  showAdmin();
+}
+
+async function logout() {
+  await sb.auth.signOut();
+  currentUser = null;
+  showAdminLogin();
+}
+
+// ── LOAD DATA ─────────────────────────────────────────────────────────────────
+async function loadWerke() {
+  const { data, error } = await sb.from('werke').select('*').order('created_at', { ascending: false });
+  if (error) { toast('Fehler beim Laden: ' + error.message, true); return; }
+  allWerke = data || [];
+  updateStats();
+  updateKategorieFilter();
+  filterWerke();
+}
+
+// ── RENDER ARCHIV (admin) ─────────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById('statTotal').textContent = allWerke.length;
+  document.getElementById('statVerfuegbar').textContent = allWerke.filter(w => w.status === 'verfügbar').length;
+  document.getElementById('statVerkauft').textContent = allWerke.filter(w => w.status === 'verkauft').length;
+  const wert = allWerke.filter(w => w.status !== 'verkauft').reduce((s,w) => s + (Number(w.preis)||0), 0);
+  document.getElementById('statWert').textContent = wert > 0 ? '€ ' + wert.toLocaleString('de-DE') : '—';
+}
+
+function updateKategorieFilter() {
+  const kats = [...new Set(allWerke.map(w => w.kategorie).filter(Boolean))];
+  const sel = document.getElementById('filterKategorie');
+  while (sel.options.length > 1) sel.remove(1);
+  kats.forEach(k => { const o = document.createElement('option'); o.value = o.textContent = k; sel.appendChild(o); });
+
+  // Jahr-Filter: absteigend (jüngstes zuerst), nur gültige 4-stellige Jahre
+  const jahre = [...new Set(allWerke.map(w => w.jahr).filter(j => j && String(j).match(/^\d{4}$/)))]
+    .map(Number).sort((a, b) => b - a);
+  const selJ = document.getElementById('filterJahr');
+  while (selJ.options.length > 1) selJ.remove(1);
+  jahre.forEach(j => { const o = document.createElement('option'); o.value = o.textContent = j; selJ.appendChild(o); });
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────────
+function filterWerke() {
+  const q   = (document.getElementById('searchInput').value || '').toLowerCase();
+  const st  = document.getElementById('filterStatus').value;
+  const kat = document.getElementById('filterKategorie').value;
+  const jr  = document.getElementById('filterJahr').value;
+  filteredWerke = allWerke.filter(w => {
+    if (st  && w.status    !== st)  return false;
+    if (kat && w.kategorie !== kat) return false;
+    if (jr  && String(w.jahr)  !== jr)  return false;
+    if (q) {
+      const hay = [w.titel, w.technik, w.kategorie, w.beschreibung].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  renderArchiv();
+}
+
+
+// ── RENDER ARCHIV (admin) ─────────────────────────────────────────────────────
+function renderArchiv() {
+  const el = document.getElementById('archivContent');
+  if (!filteredWerke.length) {
+    el.innerHTML = `<div class="empty-state"><div class="icon">🎨</div><p>Keine Werke gefunden.</p></div>`;
+    return;
+  }
+  if (gridView) {
+    el.innerHTML = `<div class="grid">${filteredWerke.map(cardHTML).join('')}</div>`;
+  } else {
+    el.innerHTML = `<div class="list-view">
+      <div class="list-header">
+        <div></div><div>Titel</div><div>Technik</div><div>Jahr</div>
+        <div>Maße</div><div>Preis</div><div>Status</div>
+      </div>
+      ${filteredWerke.map(listRowHTML).join('')}
+    </div>`;
+  }
+  observeLazyImgs();
+}
+
+
+function thumbUrl(url, width = 400) {
+  if (!url) return null;
+  // Supabase Storage Transform API (Pro-Plan) — falls verfügbar
+  try {
+    const u = new URL(url);
+    if (u.hostname.includes('supabase') && u.pathname.includes('/storage/')) {
+      // Transformations-URL aufbauen: .../render/image/public/...
+      const transformed = url.replace('/object/public/', '/render/image/public/');
+      return transformed + (url.includes('?') ? '&' : '?') + `width=${width}&quality=70&resize=contain`;
+    }
+  } catch {}
+  return url;
+}
+
+// Lazy-Load Observer
+const imgObserver = typeof IntersectionObserver !== 'undefined'
+  ? new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const img = e.target;
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+          }
+          imgObserver.unobserve(img);
+        }
+      });
+    }, { rootMargin: '200px' })
+  : null;
+
+function observeLazyImgs() {
+  if (!imgObserver) return;
+  document.querySelectorAll('img[data-src]').forEach(img => imgObserver.observe(img));
+}
+
+function cardHTML(w) {
+  const src = thumbUrl(w.bild_url, 500);
+  const img = src
+    ? `<img class="art-card-img" data-src="${src}" src="" alt="${esc(w.titel)}" loading="lazy" style="background:var(--surface)">`
+    : `<div class="art-card-placeholder">🖼</div>`;
+  const checked = selectedIds.has(w.id) ? 'checked' : '';
+  const selCls  = selectedIds.has(w.id) ? ' selected' : '';
+  return `<div class="art-card${selCls}" onclick="cardClick('${w.id}', event)" data-id="${w.id}">
+    <input type="checkbox" class="sel-check" ${checked} onclick="event.stopPropagation();toggleSelect('${w.id}')">
+    ${img}
+    <div class="art-card-body">
+      <div class="art-card-title">${esc(w.titel)}</div>
+      <div class="art-card-meta">
+        ${w.technik ? w.technik + '<br>' : ''}
+        ${w.masse   ? w.masse           : ''}
+      </div>
+      <div class="art-card-footer">
+        <span class="price-tag">${w.preis ? '€ ' + Number(w.preis).toLocaleString('de-DE') : ''}</span>
+        <span class="status-badge status-${w.status}">${w.status}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function listRowHTML(w) {
+  const src = thumbUrl(w.bild_url, 120);
+  const thumb = src
+    ? `<img class="list-thumb" data-src="${src}" src="" loading="lazy">`
+    : `<div class="list-thumb-ph">🖼</div>`;
+  const checked = selectedIds.has(w.id) ? 'checked' : '';
+  const selCls  = selectedIds.has(w.id) ? ' selected' : '';
+  return `<div class="list-row${selCls}" onclick="cardClick('${w.id}', event)" data-id="${w.id}">
+    <div style="display:flex;align-items:center;justify-content:center;gap:4px">
+      <input type="checkbox" class="sel-check" ${checked} onclick="event.stopPropagation();toggleSelect('${w.id}')">
+      ${thumb}
+    </div>
+    <div class="list-title">${esc(w.titel)}</div>
+    <div>${esc(w.technik||'')}</div>
+    <div>${w.jahr||''}</div>
+    <div>${esc(w.masse||'')}</div>
+    <div class="list-price">${w.preis ? '€ '+Number(w.preis).toLocaleString('de-DE') : ''}</div>
+    <div><span class="status-badge status-${w.status}">${w.status}</span></div>
+  </div>`;
+}
+
+// ── DETAIL ────────────────────────────────────────────────────────────────────
+function openDetail(id) {
+  const w = allWerke.find(x => x.id === id);
+  if (!w) return;
+  document.getElementById('detailTitle').textContent = w.titel;
+
+  const img = w.bild_url
+    ? `<img src="${thumbUrl(w.bild_url, 900)}" style="width:100%;height:100%;max-height:420px;object-fit:contain">`
+    : `<div style="font-size:60px;color:var(--text-dim)">🖼</div>`;
+
+  const adminBtns = currentUser ? `
+    <button class="btn-ghost" onclick="closeDetail();openEditModal('${w.id}')">Bearbeiten</button>
+    <button class="btn-danger" onclick="deleteWerk('${w.id}')">Löschen</button>
+    <button class="btn-ghost" onclick="exportPDF('${w.id}')">PDF</button>` : '';
+
+  document.getElementById('detailBody').innerHTML = `
+    <div class="detail-layout">
+      <div class="detail-img-wrap">${img}</div>
+      <div class="detail-info">
+        <div class="detail-title">${esc(w.titel)}</div>
+        ${w.preis ? `<div class="detail-price">€ ${Number(w.preis).toLocaleString('de-DE')}</div>` : ''}
+        ${row('Technik',      w.technik)}
+        ${row('Jahr',         w.jahr)}
+        ${row('Maße',         w.masse)}
+        ${row('Kategorie',    w.kategorie)}
+        ${row('Ort',          w.ort)}
+        ${row('Status',       w.status)}
+        ${row('Beschreibung', w.beschreibung)}
+        <div class="detail-actions">${adminBtns}</div>
+      </div>
+    </div>`;
+  document.getElementById('detailOverlay').classList.remove('hidden');
+}
+
+function row(label, val) {
+  if (!val) return '';
+  return `<div class="detail-row">
+    <div class="detail-row-label">${label}</div>
+    <div class="detail-row-value">${esc(String(val))}</div>
+  </div>`;
+}
+
+function closeDetail() { document.getElementById('detailOverlay').classList.add('hidden'); }
+
+// ── ADD / EDIT MODAL ──────────────────────────────────────────────────────────
+function openAddModal() {
+  editId = null;
+  document.getElementById('addModalTitle').textContent = 'Neues Werk';
+  document.getElementById('saveBtn').textContent = 'Speichern';
+  ['fTitel','fJahr','fTechnik','fMasse','fPreis','fKategorie','fOrt','fBeschreibung'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fStatus').value = 'verfügbar';
+  document.getElementById('uploadPreview').classList.remove('visible');
+  document.getElementById('uploadPreview').src = '';
+  document.getElementById('fBild').value = '';
+  document.getElementById('addOverlay').classList.remove('hidden');
+}
+
+function openEditModal(id) {
+  const w = allWerke.find(x => x.id === id);
+  if (!w) return;
+  editId = id;
+  document.getElementById('addModalTitle').textContent = 'Werk bearbeiten';
+  document.getElementById('saveBtn').textContent = 'Aktualisieren';
+  document.getElementById('fTitel').value       = w.titel || '';
+  document.getElementById('fJahr').value        = w.jahr  || '';
+  document.getElementById('fTechnik').value     = w.technik || '';
+  document.getElementById('fMasse').value       = w.masse  || '';
+  document.getElementById('fPreis').value       = w.preis  || '';
+  document.getElementById('fKategorie').value   = w.kategorie || '';
+  document.getElementById('fOrt').value         = w.ort       || '';
+  document.getElementById('fStatus').value      = w.status || 'verfügbar';
+  document.getElementById('fBeschreibung').value= w.beschreibung || '';
+  if (w.bild_url) {
+    document.getElementById('uploadPreview').src = w.bild_url;
+    document.getElementById('uploadPreview').classList.add('visible');
+  } else {
+    document.getElementById('uploadPreview').classList.remove('visible');
+  }
+  document.getElementById('fBild').value = '';
+  document.getElementById('addOverlay').classList.remove('hidden');
+}
+
+function closeAddModal() { document.getElementById('addOverlay').classList.add('hidden'); }
+
+function previewBild(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const prev = document.getElementById('uploadPreview');
+    prev.src = e.target.result;
+    prev.classList.add('visible');
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── SAVE ──────────────────────────────────────────────────────────────────────
+async function saveWerk() {
+  const titel = document.getElementById('fTitel').value.trim();
+  if (!titel) { document.getElementById('fTitel').focus(); return; }
+
+  const btn = document.getElementById('saveBtn');
+  btn.textContent = '…';
+  btn.disabled = true;
+
+  let bild_url = editId ? (allWerke.find(x=>x.id===editId)?.bild_url || null) : null;
+
+  // Upload Bild wenn vorhanden
+  const fileInput = document.getElementById('fBild');
+  const file = fileInput.files[0];
+  if (file) {
+    const ext  = file.name.split('.').pop();
+    const path = `${Date.now()}.${ext}`;
+    const { error: upErr } = await sb.storage.from('bilder').upload(path, file, { upsert: true });
+    if (upErr) { toast('Bild-Upload fehlgeschlagen: ' + upErr.message, true); btn.textContent = editId?'Aktualisieren':'Speichern'; btn.disabled=false; return; }
+    const { data: urlData } = sb.storage.from('bilder').getPublicUrl(path);
+    bild_url = urlData.publicUrl;
+  }
+
+  // Werksverzeichnisnummer vergeben wenn neu oder noch keine vorhanden
+  let finalTitel = titel;
+  const existingNr = editId ? extractWerknummer(allWerke.find(x=>x.id===editId)?.titel || '') : null;
+  if (!existingNr) {
+    const jahr = document.getElementById('fJahr').value.trim();
+    const existingNummern = allWerke.map(w => extractWerknummer(w.titel)).filter(Boolean);
+    const nr = generateWerknummer(jahr, existingNummern);
+    const titelOhneNr = stripWerknummer(titel);
+    finalTitel = `${nr} — ${titelOhneNr}`.trim();
+  }
+
+  const payload = {
+    titel:       finalTitel,
+    jahr:        document.getElementById('fJahr').value        || null,
+    technik:     document.getElementById('fTechnik').value     || null,
+    masse:       document.getElementById('fMasse').value       || null,
+    preis:       Number(document.getElementById('fPreis').value)  || null,
+    kategorie:   document.getElementById('fKategorie').value   || null,
+    ort:         document.getElementById('fOrt').value         || null,
+    status:      document.getElementById('fStatus').value,
+    beschreibung:document.getElementById('fBeschreibung').value|| null,
+    bild_url,
+  };
+
+  let error;
+  if (editId) {
+    ({ error } = await sb.from('werke').update(payload).eq('id', editId));
+  } else {
+    ({ error } = await sb.from('werke').insert(payload));
+  }
+
+  btn.textContent = editId?'Aktualisieren':'Speichern';
+  btn.disabled = false;
+
+  if (error) { toast('Fehler: ' + error.message, true); return; }
+  toast(editId ? 'Werk aktualisiert ✓' : 'Werk gespeichert ✓');
+  closeAddModal();
+  loadWerke();
+}
+
+// ── DELETE ────────────────────────────────────────────────────────────────────
+async function deleteWerk(id) {
+  if (!confirm('Werk wirklich löschen?')) return;
+  const { error } = await sb.from('werke').delete().eq('id', id);
+  if (error) { toast('Fehler: ' + error.message, true); return; }
+  toast('Werk gelöscht');
+  closeDetail();
+  loadWerke();
+}
+
+// ── VIEW TOGGLE ───────────────────────────────────────────────────────────────
+function toggleView() {
+  gridView = !gridView;
+  document.getElementById('viewBtn').textContent = gridView ? '☰' : '⊞';
+  renderArchiv();
+}
+
+// ── PDF EXPORT ────────────────────────────────────────────────────────────────
+function exportPDF(id) {
+  const w = allWerke.find(x => x.id === id);
+  if (!w) return;
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.setFont('helvetica','bold');
+  doc.setFontSize(18);
+  doc.text(w.titel || '—', 20, 30);
+  doc.setFont('helvetica','normal');
+  doc.setFontSize(11);
+  let y = 50;
+  const add = (label, val) => {
+    if (!val) return;
+    doc.setFont('helvetica','bold');   doc.text(label + ':', 20, y);
+    doc.setFont('helvetica','normal'); doc.text(String(val), 70, y);
+    y += 9;
+  };
+  add('Technik', w.technik); add('Jahr', w.jahr); add('Maße', w.masse);
+  add('Kategorie', w.kategorie); add('Ort', w.ort); add('Status', w.status);
+  add('Preis', w.preis ? '€ ' + Number(w.preis).toLocaleString('de-DE') : null);
+  if (w.beschreibung) {
+    y += 5;
+    doc.setFont('helvetica','bold'); doc.text('Beschreibung:', 20, y); y += 8;
+    doc.setFont('helvetica','normal');
+    const lines = doc.splitTextToSize(w.beschreibung, 170);
+    doc.text(lines, 20, y);
+  }
+  doc.save((w.titel || 'werk') + '.pdf');
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function toast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = isError ? 'show error' : 'show';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.className = '', 3000);
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── SELECTION MODE ────────────────────────────────────────────────────────────
+function toggleSelectionMode() {
+  selectionMode = !selectionMode;
+  selectedIds.clear();
+  const btn = document.getElementById('btnSelMode');
+  btn.textContent = selectionMode ? '✕ Abbrechen' : '☑ Auswählen';
+  btn.style.borderColor = selectionMode ? 'var(--gold)' : '';
+  btn.style.color       = selectionMode ? 'var(--gold)' : '';
+  document.getElementById('btnExportSel').style.display = selectionMode ? '' : 'none';
+  document.getElementById('btnSelAll').style.display    = selectionMode ? '' : 'none';
+  document.getElementById('btnSelNone').style.display   = selectionMode ? '' : 'none';
+  document.body.classList.toggle('sel-mode', selectionMode);
+  updateSelCount();
+  renderArchiv();
+}
+
+function cardClick(id, event) {
+  if (selectionMode) { toggleSelect(id); }
+  else { openDetail(id); }
+}
+
+function toggleSelect(id) {
+  if (selectedIds.has(id)) { selectedIds.delete(id); }
+  else { selectedIds.add(id); }
+  // Update just this card visually
+  document.querySelectorAll(`[data-id="${id}"]`).forEach(el => {
+    el.classList.toggle('selected', selectedIds.has(id));
+    const cb = el.querySelector('.sel-check');
+    if (cb) cb.checked = selectedIds.has(id);
+  });
+  updateSelCount();
+}
+
+function selectAll() {
+  filteredWerke.forEach(w => selectedIds.add(w.id));
+  renderArchiv();
+  updateSelCount();
+}
+
+function selectNone() {
+  selectedIds.clear();
+  renderArchiv();
+  updateSelCount();
+}
+
+function updateSelCount() {
+  document.getElementById('selCount').textContent = selectedIds.size;
+}
+
+async function exportSelectedPDF() {
+  if (!selectedIds.size) { toast('Keine Werke ausgewählt.', true); return; }
+  const werke = allWerke.filter(w => selectedIds.has(w.id));
+  const btn = document.getElementById('btnExportSel');
+  btn.textContent = '⏳ Wird erstellt…'; btn.disabled = true;
+  try {
+    const d = getPdfDesignValues();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit:'mm', format:'a4' });
+    const W=210, H=297;
+    const { margin, gap, cols } = d;
+    const colW  = (W - margin*2 - gap*(cols-1)) / cols;
+    const imgH  = d.imgH, infoH = 40, cardH = imgH + infoH;
+    const bgR  = hexToRgb(d.bg),   cardR = hexToRgb(d.cardBg);
+    const accR = hexToRgb(d.accent), tcR  = hexToRgb(d.titleColor);
+    const mcR  = hexToRgb(d.metaColor);
+    const fillBg = () => {
+      doc.setFillColor(...bgR); doc.rect(0,0,W,H,'F');
+      if (d.bgImage) { try { doc.addImage(d.bgImage,'JPEG',0,0,W,H,'','FAST'); } catch {} }
+    };
+    if (d.showCover) {
+      fillBg();
+      doc.setTextColor(...accR); doc.setFontSize(28);
+      doc.text(d.coverTitle||'Auswahl', margin, 60);
+      doc.setTextColor(...tcR); doc.setFontSize(16);
+      doc.text(d.coverSub||'', margin, 75);
+      doc.setTextColor(...mcR); doc.setFontSize(9);
+      doc.text(`${werke.length} Werk${werke.length!==1?'e':''} · ${new Date().toLocaleDateString('de-DE')}`, margin, 90);
+    }
+    let col=0, row=0, pageStarted=false;
+    const rowsPerPage = Math.max(1, Math.floor((H-margin*2+gap)/(cardH+gap)));
+    for (let i=0; i<werke.length; i++) {
+      const w = werke[i];
+      if (!pageStarted || (col===0 && row>=rowsPerPage)) {
+        doc.addPage(); fillBg(); col=0; row=0; pageStarted=true;
+      }
+      const x = margin + col*(colW+gap);
+      const y = margin + row*(cardH+gap);
+      doc.setFillColor(...cardR); doc.rect(x,y,colW,cardH,'F');
+      if (w.bild_url) {
+        try {
+          const imgData = await fetchImageAsBase64(w.bild_url);
+          if (imgData) {
+            const dims = await getImgDims(imgData);
+            const ar = dims.w/dims.h;
+            let dw=imgH*ar, dh=imgH;
+            if (dw>colW) { dw=colW; dh=dw/ar; }
+            const ox=x+(colW-dw)/2, oy=y+(imgH-dh)/2;
+            doc.setFillColor(...bgR.map(v=>Math.round(v*0.75)));
+            doc.rect(x,y,colW,imgH,'F');
+            doc.addImage(imgData,'JPEG',ox,oy,dw,dh,'','FAST');
+          }
+        } catch { doc.setFillColor(...bgR.map(v=>Math.round(v*0.8))); doc.rect(x,y,colW,imgH,'F'); }
+      } else {
+        doc.setFillColor(...bgR.map(v=>Math.round(v*0.8))); doc.rect(x,y,colW,imgH,'F');
+      }
+      if (d.showNr) { doc.setTextColor(...mcR); doc.setFontSize(6); doc.text(`#${i+1}`,x+colW-2,y+imgH-2,{align:'right'}); }
+      let iy = y+imgH+6;
+      if (d.showTitel&&w.titel) { doc.setTextColor(...tcR); doc.setFontSize(d.titleSize); doc.text((w.titel||'').substring(0,28),x+3,iy); iy+=d.titleSize*0.48+2; }
+      doc.setTextColor(...mcR); doc.setFontSize(d.metaSize);
+      const l1=[d.showTechnik&&w.technik,d.showJahr&&w.jahr].filter(Boolean).join(' · ');
+      if (l1) { doc.text(l1.substring(0,36),x+3,iy); iy+=d.metaSize*0.42+1.5; }
+      if (d.showMasse&&w.masse) { doc.text(w.masse.substring(0,30),x+3,iy); iy+=d.metaSize*0.42+1.5; }
+      iy+=2;
+      if (d.showPreis&&w.preis) { doc.setTextColor(...accR); doc.setFontSize(d.preisSize); doc.text(`${Number(w.preis).toLocaleString('de-DE')} €`,x+3,iy); }
+      if (d.showStatus&&w.status) { const sc=w.status==='verfügbar'?[39,174,96]:w.status==='verkauft'?[192,57,43]:accR; doc.setTextColor(...sc); doc.setFontSize(6); doc.text(w.status.toUpperCase(),x+colW-2,iy,{align:'right'}); }
+      col++; if (col>=cols) { col=0; row++; }
+    }
+    doc.save(`Auswahl_${werke.length}_Werke.pdf`);
+    toast(`PDF mit ${werke.length} Werk${werke.length!==1?'en':''} erstellt ✓`);
+  } catch(e) {
+    toast('PDF-Fehler: ' + e.message, true);
+  } finally {
+    btn.textContent = `↓ PDF (`; btn.disabled = false;
+    document.getElementById('selCount').textContent = selectedIds.size;
+    btn.innerHTML = `↓ PDF (<span id="selCount">${selectedIds.size}</span>)`;
+  }
+}
+
+// ── WERKSVERZEICHNISNUMMER ────────────────────────────────────────────────────
+function generateWerknummer(jahr, existingNummern) {
+  const year = (jahr && String(jahr).match(/^\d{4}$/)) ? String(jahr) : '0000';
+  const prefix = `MK-${year}-`;
+
+  // Alle bereits vergebenen Nummern für dieses Jahr sammeln
+  const used = new Set(
+    existingNummern
+      .filter(n => n && n.startsWith(prefix))
+      .map(n => n.slice(prefix.length))
+  );
+
+  // Zufällige 3-stellige Zahl suchen (100–999)
+  const pool3 = Array.from({length: 900}, (_,i) => String(i + 100));
+  const free3 = pool3.filter(n => !used.has(n));
+  if (free3.length > 0) {
+    const pick = free3[Math.floor(Math.random() * free3.length)];
+    return prefix + pick;
+  }
+
+  // Fallback: zufällige 4-stellige Zahl (1000–9999)
+  const pool4 = Array.from({length: 9000}, (_,i) => String(i + 1000));
+  const free4 = pool4.filter(n => !used.has(n));
+  if (free4.length > 0) {
+    const pick = free4[Math.floor(Math.random() * free4.length)];
+    return prefix + pick;
+  }
+
+  // Notfall (sehr unwahrscheinlich)
+  return prefix + Date.now();
+}
+
+function extractWerknummer(titel) {
+  const m = titel && titel.match(/^(MK-\d{4}-\d{3,})\s*—?\s*/);
+  return m ? m[1] : null;
+}
+
+function stripWerknummer(titel) {
+  return titel ? titel.replace(/^MK-\d{4}-\d{3,}\s*—?\s*/, '').trim() : titel;
+}
+
+async function assignMissingNummern() {
+  const ohneNummer = allWerke.filter(w => !extractWerknummer(w.titel));
+  if (!ohneNummer.length) { toast('Alle Werke haben bereits eine Nummer ✓'); return; }
+
+  const btn = document.getElementById('btnAssignNummern');
+  if (btn) { btn.textContent = '⏳ Vergebe Nummern…'; btn.disabled = true; }
+
+  // Alle bereits vergebenen Nummern sammeln
+  const existingNummern = allWerke.map(w => extractWerknummer(w.titel)).filter(Boolean);
+
+  let ok = 0, fail = 0;
+  for (const w of ohneNummer) {
+    const nr = generateWerknummer(w.jahr, existingNummern);
+    existingNummern.push(nr); // sofort reservieren für nächste Iteration
+    const neuerTitel = `${nr} — ${w.titel || ''}`.trim();
+    const { error } = await sb.from('werke').update({ titel: neuerTitel }).eq('id', w.id);
+    if (error) { fail++; } else { ok++; }
+  }
+
+  if (btn) { btn.textContent = '✦ Nummern vergeben'; btn.disabled = false; }
+  toast(`${ok} Werk${ok!==1?'e':''} nummeriert${fail ? ` (${fail} Fehler)` : ''} ✓`);
+  loadWerke();
+}
+
+// ── APP DESIGN ────────────────────────────────────────────────────────────────
+function applyAppTheme(bg, card, accent, text, border) {
+  document.getElementById('appBg').value     = bg;
+  document.getElementById('appCard').value   = card;
+  document.getElementById('appAccent').value = accent;
+  document.getElementById('appText').value   = text;
+  document.getElementById('appBorder').value = border;
+  applyAppDesign();
+}
+
+function applyAppDesign(saveToCloud = true) {
+  const bg     = document.getElementById('appBg').value;
+  const card   = document.getElementById('appCard').value;
+  const accent = document.getElementById('appAccent').value;
+  const text   = document.getElementById('appText').value;
+  const border = document.getElementById('appBorder').value;
+  const main   = document.getElementById('appLogoMain')?.value || 'Mehmet & Kazim';
+  const sub    = document.getElementById('appLogoSub')?.value  || 'Archive';
+  const fs     = document.getElementById('appFontSize')?.value || '13';
+  const fontD  = document.getElementById('appFontDisplay')?.value || "'Cormorant Garamond', serif";
+  const fontB  = document.getElementById('appFontBody')?.value   || "'DM Mono', monospace";
+
+  // Update value labels
+  document.getElementById('appBgVal').textContent       = bg;
+  document.getElementById('appCardVal').textContent     = card;
+  document.getElementById('appAccentVal').textContent   = accent;
+  document.getElementById('appTextVal').textContent     = text;
+  document.getElementById('appBorderVal').textContent   = border;
+  document.getElementById('appFontSizeVal').textContent = fs + 'px';
+
+  // Derive surface, text-mid, text-dim
+  const lum     = hexLum(bg);
+  const surface = shiftHex(bg, lum < 0.3 ? 10 : -10);
+  const textMid = blendHex(bg, text, 0.5);
+  const textDim = blendHex(bg, text, 0.25);
+
+  const root = document.documentElement;
+  root.style.setProperty('--bg',         bg);
+  root.style.setProperty('--surface',    surface);
+  root.style.setProperty('--card',       card);
+  root.style.setProperty('--border',     border);
+  root.style.setProperty('--gold',       accent);
+  root.style.setProperty('--gold-light', shiftHex(accent, 20));
+  root.style.setProperty('--gold-dim',   accent + '1f');
+  root.style.setProperty('--text',       text);
+  root.style.setProperty('--text-dim',   textDim);
+  root.style.setProperty('--text-mid',   textMid);
+
+  document.body.style.fontSize   = fs + 'px';
+  document.body.style.fontFamily = fontB;
+
+  document.querySelectorAll('.logo, .art-card-title, .detail-title, .detail-price, .stat-value, .modal-title, .galerie-logo').forEach(el => {
+    el.style.fontFamily = fontD;
+  });
+
+  const logoEl = document.querySelector('#adminView .logo');
+  if (logoEl) logoEl.innerHTML = `${main} <span>${sub}</span>`;
+
+  const design = { bg, card, accent, text, border, main, sub, fs, fontD, fontB };
+
+  // Always save locally as fallback
+  localStorage.setItem('appDesign', JSON.stringify(design));
+
+  // Save to Supabase cloud (debounced) so all devices sync
+  if (saveToCloud && currentUser) {
+    clearTimeout(applyAppDesign._timer);
+    applyAppDesign._timer = setTimeout(async () => {
+      await sb.from('einstellungen').upsert({ key: 'appDesign', value: JSON.stringify(design), updated_at: new Date().toISOString() });
+      toast('Design gespeichert ✓');
+    }, 800);
+  }
+}
+
+async function loadAppDesign() {
+  let design = null;
+
+  // Try Supabase first (cloud = all devices)
+  if (currentUser) {
+    try {
+      const { data } = await sb.from('einstellungen').select('value').eq('key', 'appDesign').single();
+      if (data?.value) design = JSON.parse(data.value);
+    } catch {}
+  }
+
+  // Fallback: localStorage
+  if (!design) {
+    const saved = localStorage.getItem('appDesign');
+    if (saved) { try { design = JSON.parse(saved); } catch {} }
+  }
+
+  if (!design) {
+    // No saved design — apply new defaults
+    applyAppDesign(false);
+    return;
+  }
+
+  const sv = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+  sv('appBg', design.bg);           sv('appCard', design.card);
+  sv('appAccent', design.accent);   sv('appText', design.text);
+  sv('appBorder', design.border);   sv('appLogoMain', design.main);
+  sv('appLogoSub', design.sub);     sv('appFontSize', design.fs);
+  sv('appFontDisplay', design.fontD); sv('appFontBody', design.fontB);
+
+  applyAppDesign(false); // apply without re-saving
+}
+
+function shiftHex(hex, amount) {
+  let r = Math.min(255, Math.max(0, parseInt(hex.slice(1,3),16) + amount));
+  let g = Math.min(255, Math.max(0, parseInt(hex.slice(3,5),16) + amount));
+  let b = Math.min(255, Math.max(0, parseInt(hex.slice(5,7),16) + amount));
+  return '#' + [r,g,b].map(v => v.toString(16).padStart(2,'0')).join('');
+}
+
+function blendHex(hex1, hex2, t) {
+  const r1=parseInt(hex1.slice(1,3),16),g1=parseInt(hex1.slice(3,5),16),b1=parseInt(hex1.slice(5,7),16);
+  const r2=parseInt(hex2.slice(1,3),16),g2=parseInt(hex2.slice(3,5),16),b2=parseInt(hex2.slice(5,7),16);
+  return '#'+[Math.round(r1+(r2-r1)*t),Math.round(g1+(g2-g1)*t),Math.round(b1+(b2-b1)*t)].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+
+// ── PDF DESIGNER ─────────────────────────────────────────────────────────────
+let pdfCols = 2;
+let pdfBgImageData = null;
+
+function setPdfCols(n) {
+  pdfCols = n;
+  [1,2,3].forEach(i => document.getElementById(`col${i}btn`).classList.toggle('active', i === n));
+  updatePreview();
+}
+
+function applyBgPreset(bg, card, accent) {
+  document.getElementById('pdBg').value     = bg;
+  document.getElementById('pdCardBg').value = card;
+  document.getElementById('pdAccent').value = accent;
+  const lum = hexLum(bg);
+  document.getElementById('pdTitleColor').value = lum < 0.4 ? '#e8e0d0' : '#1a1714';
+  document.getElementById('pdMetaColor').value  = lum < 0.4 ? '#7a7060' : '#6b6358';
+  updatePreview();
+}
+
+function hexLum(hex) {
+  const r = parseInt(hex.slice(1,3),16)/255;
+  const g = parseInt(hex.slice(3,5),16)/255;
+  const b = parseInt(hex.slice(5,7),16)/255;
+  return 0.2126*r + 0.7152*g + 0.0722*b;
+}
+
+function hexToRgb(hex) {
+  return [parseInt(hex.slice(1,3),16), parseInt(hex.slice(3,5),16), parseInt(hex.slice(5,7),16)];
+}
+
+function handleBgImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    pdfBgImageData = ev.target.result;
+    document.getElementById('bgImageLabel').textContent = '✓ ' + file.name;
+    updatePreview();
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeBgImage() {
+  pdfBgImageData = null;
+  document.getElementById('bgImageLabel').textContent = 'Kein Bild';
+  document.getElementById('pdBgImageInput').value = '';
+  updatePreview();
+}
+
+function getPdfDesignValues() {
+  const gv = id => document.getElementById(id);
+  const iv = id => parseInt(gv(id).value);
+  const cv = id => gv(id).value;
+  const bv = id => gv(id).checked;
+  return {
+    bg:         cv('pdBg'),        cardBg:    cv('pdCardBg'),
+    accent:     cv('pdAccent'),    titleColor:cv('pdTitleColor'),
+    metaColor:  cv('pdMetaColor'), bgOpacity: parseFloat(gv('pdBgOpacity').value || '1'),
+    titleSize:  iv('pdTitleSize'), metaSize:  iv('pdMetaSize'),
+    preisSize:  iv('pdPreisSize'), imgH:      iv('pdImgH'),
+    margin:     iv('pdMargin'),    gap:       iv('pdGap'),
+    cols:       pdfCols,
+    showTitel:  bv('pdShowTitel'),   showTechnik: bv('pdShowTechnik'),
+    showJahr:   bv('pdShowJahr'),    showMasse:   bv('pdShowMasse'),
+    showPreis:  bv('pdShowPreis'),   showStatus:  bv('pdShowStatus'),
+    showNr:     bv('pdShowNr'),      showCover:   bv('pdShowCover'),
+    coverTitle: cv('pdCoverTitle'),  coverSub:    cv('pdCoverSub'),
+    titleFont:  gv('pdTitleFont').value || 'serif',
+    metaFont:   gv('pdMetaFont').value  || 'monospace',
+    bgImage:    pdfBgImageData,
+  };
+}
+
+function updateSliderLabels() {
+  const map = {
+    pdTitleSize:['pdTitleSizeVal','pt'], pdMetaSize:['pdMetaSizeVal','pt'],
+    pdPreisSize:['pdPreisSizeVal','pt'], pdImgH:['pdImgHVal','mm'],
+    pdMargin:['pdMarginVal','mm'],       pdGap:['pdGapVal','mm'],
+    pdBgOpacity:['pdBgOpacityVal',''],
+  };
+  for (const [slid,[lbl,unit]] of Object.entries(map)) {
+    const el = document.getElementById(slid);
+    const lb = document.getElementById(lbl);
+    if (el && lb) lb.textContent = parseFloat(el.value).toFixed(unit===''?1:0) + unit;
+  }
+}
+
+async function updatePreview() {
+  updateSliderLabels();
+  const d = getPdfDesignValues();
+  const canvas = document.getElementById('pdfPreviewCanvas');
+  if (!canvas) return;
+
+  const SCALE = 2.8;
+  const PW = Math.round(210 * SCALE);
+  const PH = Math.round(297 * SCALE);
+  canvas.width  = PW;
+  canvas.height = PH;
+  const ctx = canvas.getContext('2d');
+  const s   = SCALE;
+
+  const bg   = hexToRgb(d.bg);
+  const card = hexToRgb(d.cardBg);
+  const acc  = hexToRgb(d.accent);
+  const tc   = hexToRgb(d.titleColor);
+  const mc   = hexToRgb(d.metaColor);
+
+  const margin = d.margin * s;
+  const gap    = d.gap * s;
+  const cols   = d.cols;
+  const colW   = (PW - margin*2 - gap*(cols-1)) / cols;
+  const imgH   = d.imgH * s;
+  const infoH  = 42 * s;
+  const cardH  = imgH + infoH;
+
+  ctx.fillStyle = `rgb(${bg})`;
+  ctx.fillRect(0, 0, PW, PH);
+
+  if (d.bgImage) {
+    await new Promise(res => {
+      const bgi = new Image();
+      bgi.onload = () => { ctx.globalAlpha = d.bgOpacity; ctx.drawImage(bgi,0,0,PW,PH); ctx.globalAlpha=1; res(); };
+      bgi.onerror = res; bgi.src = d.bgImage;
+    });
+  }
+
+  // Use live data from supabase
+  const sample = allWerke.slice(0, cols * 2);
+  const imgCache = {};
+  await Promise.all(sample.map(w => w?.bild_url ? new Promise(res => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => { imgCache[w.id] = img; res(); };
+    img.onerror = res; img.src = w.bild_url;
+  }) : Promise.resolve()));
+
+  let cx = margin, cy = margin, colIdx = 0;
+  const drawCount = Math.max(sample.length, cols * 2);
+
+  for (let i = 0; i < Math.min(drawCount, cols * 2); i++) {
+    const w = sample[i] || null;
+    ctx.fillStyle = `rgb(${card})`; ctx.fillRect(cx, cy, colW, cardH);
+
+    if (w && imgCache[w.id]) {
+      const img = imgCache[w.id];
+      const ar = img.naturalWidth / img.naturalHeight;
+      let dw = imgH * ar, dh = imgH;
+      if (dw > colW) { dw = colW; dh = dw / ar; }
+      const ox = cx + (colW - dw) / 2, oy = cy + (imgH - dh) / 2;
+      ctx.fillStyle = `rgb(${bg.map(v=>Math.round(v*0.72))})`;
+      ctx.fillRect(cx, cy, colW, imgH);
+      ctx.drawImage(img, ox, oy, dw, dh);
+    } else {
+      ctx.fillStyle = `rgb(${bg.map(v=>Math.round(v*0.8))})`;
+      ctx.fillRect(cx, cy, colW, imgH);
+      ctx.fillStyle = `rgba(${mc.join(',')},0.35)`;
+      ctx.font = `${14*s}px serif`; ctx.textAlign = 'center';
+      ctx.fillText('🖼', cx + colW/2, cy + imgH/2 + 5*s);
+    }
+
+    // Card text
+    let iy = cy + imgH + 7*s; ctx.textAlign = 'left';
+    const fake = { titel:'Werktitel', technik:'Öl auf Leinwand', jahr:'2024', preis:'1200', status:'verfügbar', masse:'80×60cm' };
+    const ww = w || fake;
+
+    if (d.showNr) {
+      ctx.fillStyle = `rgba(${mc.join(',')},0.6)`;
+      ctx.font = `${d.metaSize*s*0.65}px monospace`; ctx.textAlign='right';
+      ctx.fillText(`#${i+1}`, cx+colW-3*s, cy+imgH-3*s); ctx.textAlign='left';
+    }
+    if (d.showTitel && ww.titel) {
+      ctx.fillStyle = `rgb(${tc.join(',')})`;
+      ctx.font = `bold ${d.titleSize*s*0.7}px ${(d.titleFont||'serif').replace(/'/g,'')}`;
+      ctx.fillText((ww.titel||'').substring(0,22), cx+4*s, iy);
+      iy += d.titleSize*s*0.78;
+    }
+    const meta1 = [d.showTechnik&&ww.technik, d.showJahr&&ww.jahr].filter(Boolean).join(' · ');
+    if (meta1) {
+      ctx.fillStyle = `rgb(${mc.join(',')})`;
+      ctx.font = `${d.metaSize*s*0.68}px ${(d.metaFont||'monospace').replace(/'/g,'')}`;
+      ctx.fillText(meta1.substring(0,30), cx+4*s, iy); iy += d.metaSize*s*0.85;
+    }
+    if (d.showMasse && ww.masse) {
+      ctx.fillStyle = `rgb(${mc.join(',')})`;
+      ctx.font = `${d.metaSize*s*0.68}px ${(d.metaFont||'monospace').replace(/'/g,'')}`;
+      ctx.fillText(ww.masse, cx+4*s, iy); iy += d.metaSize*s*0.85;
+    }
+    iy += 2*s;
+    if (d.showPreis && ww.preis) {
+      ctx.fillStyle = `rgb(${acc.join(',')})`;
+      ctx.font = `${d.preisSize*s*0.7}px ${(d.metaFont||'monospace').replace(/'/g,'')}`;
+      ctx.fillText(`${Number(ww.preis).toLocaleString('de-DE')} €`, cx+4*s, iy);
+    }
+    if (d.showStatus && ww.status) {
+      const sc = ww.status==='verfügbar'?[39,174,96]:ww.status==='verkauft'?[192,57,43]:acc;
+      ctx.fillStyle = `rgb(${sc.join(',')})`; ctx.textAlign='right';
+      ctx.font = `${(d.metaSize-1)*s*0.65}px ${(d.metaFont||'monospace').replace(/'/g,'')}`;
+      ctx.fillText(ww.status.toUpperCase(), cx+colW-4*s, iy); ctx.textAlign='left';
+    }
+
+    colIdx++;
+    if (colIdx >= cols) { colIdx=0; cx=margin; cy+=cardH+gap; } else { cx+=colW+gap; }
+  }
+}
+
+function resetPdfDesign() {
+  document.getElementById('pdBg').value         = '#0e0d0b';
+  document.getElementById('pdCardBg').value     = '#1c1a16';
+  document.getElementById('pdAccent').value     = '#c9a84c';
+  document.getElementById('pdTitleColor').value = '#e8e0d0';
+  document.getElementById('pdMetaColor').value  = '#7a7060';
+  document.getElementById('pdTitleSize').value  = '11';
+  document.getElementById('pdMetaSize').value   = '8';
+  document.getElementById('pdPreisSize').value  = '9';
+  document.getElementById('pdImgH').value       = '52';
+  document.getElementById('pdMargin').value     = '15';
+  document.getElementById('pdGap').value        = '8';
+  document.getElementById('pdBgOpacity').value  = '1';
+  pdfBgImageData = null;
+  document.getElementById('bgImageLabel').textContent = 'Kein Bild';
+  setPdfCols(2);
+  ['pdShowTitel','pdShowTechnik','pdShowJahr','pdShowMasse','pdShowPreis','pdShowStatus','pdShowCover']
+    .forEach(id => { document.getElementById(id).checked = true; });
+  document.getElementById('pdShowNr').checked = false;
+  document.getElementById('pdCoverTitle').value = 'Mehmet & Kazim';
+  document.getElementById('pdCoverSub').value   = 'Archive';
+  updatePreview();
+}
+
+async function exportPDFWithDesign() {
+  if (!allWerke.length) { alert('Keine Werke vorhanden.'); return; }
+  const btn = event.target;
+  btn.textContent = '⏳ Wird erstellt…'; btn.disabled = true;
+  try {
+    const d = getPdfDesignValues();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit:'mm', format:'a4' });
+    const W=210, H=297;
+    const { margin, gap, cols } = d;
+    const colW  = (W - margin*2 - gap*(cols-1)) / cols;
+    const imgH  = d.imgH, infoH = 40, cardH = imgH + infoH;
+
+    const bgR  = hexToRgb(d.bg),   cardR = hexToRgb(d.cardBg);
+    const accR = hexToRgb(d.accent), tcR  = hexToRgb(d.titleColor);
+    const mcR  = hexToRgb(d.metaColor);
+
+    const fillBg = () => {
+      doc.setFillColor(...bgR); doc.rect(0,0,W,H,'F');
+      if (d.bgImage) { try { doc.addImage(d.bgImage,'JPEG',0,0,W,H,'','FAST'); } catch {} }
+    };
+
+    if (d.showCover) {
+      fillBg();
+      doc.setTextColor(...accR); doc.setFontSize(28);
+      doc.text(d.coverTitle||'Archive', margin, 60);
+      doc.setTextColor(...tcR); doc.setFontSize(16);
+      doc.text(d.coverSub||'', margin, 75);
+      doc.setTextColor(...mcR); doc.setFontSize(9);
+      doc.text(`${allWerke.length} Werke · ${new Date().toLocaleDateString('de-DE')}`, margin, 90);
+    }
+
+    let col=0, row=0, pageStarted=false;
+    const rowsPerPage = Math.max(1, Math.floor((H-margin*2+gap)/(cardH+gap)));
+
+    for (let i=0; i<allWerke.length; i++) {
+      const w = allWerke[i];
+      if (!pageStarted || (col===0 && row>=rowsPerPage)) {
+        doc.addPage(); fillBg(); col=0; row=0; pageStarted=true;
+      }
+      const x = margin + col*(colW+gap);
+      const y = margin + row*(cardH+gap);
+
+      doc.setFillColor(...cardR); doc.rect(x,y,colW,cardH,'F');
+
+      if (w.bild_url) {
+        try {
+          const imgData = await fetchImageAsBase64(w.bild_url);
+          if (imgData) {
+            const dims = await getImgDims(imgData);
+            const ar = dims.w/dims.h;
+            let dw=imgH*ar, dh=imgH;
+            if (dw>colW) { dw=colW; dh=dw/ar; }
+            const ox=x+(colW-dw)/2, oy=y+(imgH-dh)/2;
+            doc.setFillColor(...bgR.map(v=>Math.round(v*0.75)));
+            doc.rect(x,y,colW,imgH,'F');
+            doc.addImage(imgData,'JPEG',ox,oy,dw,dh,'','FAST');
+          }
+        } catch { doc.setFillColor(...bgR.map(v=>Math.round(v*0.8))); doc.rect(x,y,colW,imgH,'F'); }
+      } else {
+        doc.setFillColor(...bgR.map(v=>Math.round(v*0.8))); doc.rect(x,y,colW,imgH,'F');
+      }
+
+      if (d.showNr) { doc.setTextColor(...mcR); doc.setFontSize(6); doc.text(`#${i+1}`,x+colW-2,y+imgH-2,{align:'right'}); }
+
+      let iy = y+imgH+6;
+      if (d.showTitel&&w.titel) { doc.setTextColor(...tcR); doc.setFontSize(d.titleSize); doc.text((w.titel||'').substring(0,28),x+3,iy); iy+=d.titleSize*0.48+2; }
+      doc.setTextColor(...mcR); doc.setFontSize(d.metaSize);
+      const l1=[d.showTechnik&&w.technik,d.showJahr&&w.jahr].filter(Boolean).join(' · ');
+      if (l1) { doc.text(l1.substring(0,36),x+3,iy); iy+=d.metaSize*0.42+1.5; }
+      if (d.showMasse&&w.masse) { doc.text(w.masse.substring(0,30),x+3,iy); iy+=d.metaSize*0.42+1.5; }
+      iy+=2;
+      if (d.showPreis&&w.preis) { doc.setTextColor(...accR); doc.setFontSize(d.preisSize); doc.text(`${Number(w.preis).toLocaleString('de-DE')} €`,x+3,iy); }
+      if (d.showStatus&&w.status) { const sc=w.status==='verfügbar'?[39,174,96]:w.status==='verkauft'?[192,57,43]:accR; doc.setTextColor(...sc); doc.setFontSize(6); doc.text(w.status.toUpperCase(),x+colW-2,iy,{align:'right'}); }
+
+      col++;
+      if (col>=cols) { col=0; row++; }
+    }
+
+    const title = (d.coverTitle||'Archive').replace(/\s+/g,'_');
+    doc.save(`${title}.pdf`);
+    toast('PDF erstellt ✓');
+  } catch(e) {
+    toast('PDF-Fehler: ' + e.message, true);
+  } finally {
+    btn.textContent = '↓ PDF exportieren'; btn.disabled = false;
+  }
+}
+
+async function fetchImageAsBase64(url) {
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    return new Promise(res => { const r=new FileReader(); r.onload=e=>res(e.target.result); r.readAsDataURL(blob); });
+  } catch { return null; }
+}
+
+async function getImgDims(src) {
+  return new Promise(res => {
+    const img = new Image();
+    img.onload = () => res({w:img.naturalWidth, h:img.naturalHeight});
+    img.onerror = () => res({w:1,h:1});
+    img.src = src;
+  });
+}
+
+// ── KEYBOARD ──────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeDetail(); closeAddModal(); }
+});
+</script>
+</body>
+</html>
