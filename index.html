@@ -7,6 +7,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@400;700&family=Josefin+Sans:wght@300;400;600&family=Raleway:wght@300;400;600&family=Montserrat:wght@300;400;600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  if (typeof supabase === 'undefined') {
+    document.write('<script src="https://unpkg.com/@supabase/supabase-js@2"><\/script>');
+  }
+</script>
 <style>
 :root {
   --bg: #ffe7e7;
@@ -868,7 +873,7 @@ body.sel-mode .list-row .sel-check { display: block; }
     </div>
     <div class="form-group">
       <label>Passwort</label>
-      <input type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(e.key==='Enter')doLogin()">
+      <input type="password" id="loginPassword" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
     </div>
     <button class="btn-primary" style="width:100%;margin-top:16px;padding:12px" onclick="doLogin()">Anmelden</button>
     <div id="loginError" class="login-error"></div>
@@ -963,7 +968,14 @@ body.sel-mode .list-row .sel-check { display: block; }
 // ── SUPABASE ─────────────────────────────────────────────────────────────────
 const SUPABASE_URL = 'https://waerhdrkbsijawwhfiel.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndhZXJoZHJrYnNpamF3d2hmaWVsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NjM4MjMsImV4cCI6MjA5MDQzOTgyM30.UjuqJee9VBX2acF992dae-2AB0SpMAkbpZdKLlQ9JwQ';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let sb;
+try {
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+} catch(e) {
+  document.getElementById('loginView').style.display = '';
+  document.getElementById('adminView').style.display = 'none';
+  alert('Supabase konnte nicht geladen werden. Bitte Seite neu laden.');
+}
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
 let allWerke = [];
