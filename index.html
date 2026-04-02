@@ -309,7 +309,7 @@ main { padding: 30px 40px; }
 .form-group.full { grid-column: 1 / -1; }
 label {
   font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
-  color: var(--text-dim);
+  color: var(--text);
 }
 .form-group input, .form-group select, .form-group textarea {
   background: var(--surface); border: 1px solid var(--border);
@@ -367,7 +367,7 @@ label {
 /* ── LOGIN ── */
 .login-wrap {
   max-width: 400px; margin: 80px auto; padding: 40px;
-  background: var(--card); border: 1px solid var(--border);
+  background: var(--bg); border: 1px solid var(--border);
 }
 .login-title {
   font-family: 'Playfair Display', serif; font-size: 22px;
@@ -375,7 +375,7 @@ label {
 }
 .login-wrap .form-group { margin-bottom: 16px; }
 .login-wrap input {
-  background: var(--surface); border: 1px solid var(--border);
+  background: #fff; border: 1px solid var(--border);
   color: var(--text); font-family: 'DM Mono', monospace;
   font-size: 13px; padding: 10px 12px; outline: none; width: 100%;
 }
@@ -859,7 +859,7 @@ body.sel-mode .list-row .sel-check { display: block; }
 <!-- ══════════════════════════════════════════════════
      LOGIN VIEW
 ══════════════════════════════════════════════════ -->
-<div id="loginView" style="display:none">
+<div id="loginView">
   <div class="login-wrap">
     <div class="login-title">Admin Login</div>
     <div class="form-group">
@@ -977,14 +977,20 @@ let selectedIds = new Set();
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
 (async function init() {
-  const { data: { session } } = await sb.auth.getSession();
-  currentUser = session?.user || null;
-
-  const params = new URLSearchParams(window.location.search);
-  if (currentUser) {
-    showAdmin();
-    loadAppDesign();
-  } else {
+  // Fallback: show login after 5s if Supabase doesn't respond
+  const fallback = setTimeout(() => showAdminLogin(), 5000);
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    clearTimeout(fallback);
+    currentUser = session?.user || null;
+    if (currentUser) {
+      showAdmin();
+      loadAppDesign();
+    } else {
+      showAdminLogin();
+    }
+  } catch(e) {
+    clearTimeout(fallback);
     showAdminLogin();
   }
 })();
@@ -1001,7 +1007,7 @@ function showAdmin() {
 }
 
 function showAdminLogin() {
-  document.getElementById('loginView').style.display = 'block';
+  document.getElementById('loginView').style.display = '';
   document.getElementById('adminView').style.display = 'none';
 }
 
